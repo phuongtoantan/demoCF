@@ -10,25 +10,25 @@ Resources:
       EnableDnsHostnames: true
       Tags:
         - Key: Name
-          Value: TanVPC
+          Value: MyVPC
 
   MyInternetGateway:
     Type: 'AWS::EC2::InternetGateway'
     Properties:
       Tags:
         - Key: Name
-          Value: TanInternetGateway
+          Value: MyInternetGateway
 
   AttachGateway:
     Type: 'AWS::EC2::VPCGatewayAttachment'
     Properties:
-      VpcId: !Ref TanVPC
-      InternetGatewayId: !Ref TanInternetGateway
+      VpcId: !Ref MyVPC
+      InternetGatewayId: !Ref MyInternetGateway
 
   MySubnet:
     Type: 'AWS::EC2::Subnet'
     Properties:
-      VpcId: !Ref TanVPC
+      VpcId: !Ref MyVPC
       CidrBlock: 10.0.0.0/24
       MapPublicIpOnLaunch: true
       Tags:
@@ -38,7 +38,7 @@ Resources:
   MyRouteTable:
     Type: 'AWS::EC2::RouteTable'
     Properties:
-      VpcId: !Ref TanVPC
+      VpcId: !Ref MyVPC
       Tags:
         - Key: Name
           Value: MyRouteTable
@@ -49,7 +49,7 @@ Resources:
     Properties:
       RouteTableId: !Ref MyRouteTable
       DestinationCidrBlock: 0.0.0.0/0
-      GatewayId: !Ref TanInternetGateway
+      GatewayId: !Ref MyInternetGateway
 
   SubnetRouteTableAssociation:
     Type: 'AWS::EC2::SubnetRouteTableAssociation'
@@ -61,7 +61,7 @@ Resources:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
       GroupDescription: Enable HTTP, HTTPS, and SSH access
-      VpcId: !Ref TanVPC
+      VpcId: !Ref MyVPC
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 80
