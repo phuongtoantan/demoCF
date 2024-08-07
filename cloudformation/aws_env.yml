@@ -10,58 +10,58 @@ Resources:
       EnableDnsHostnames: true
       Tags:
         - Key: Name
-          Value: MyVPC
+          Value: TanVPC
 
   MyInternetGateway:
     Type: 'AWS::EC2::InternetGateway'
     Properties:
       Tags:
         - Key: Name
-          Value: MyInternetGateway
+          Value: TanInternetGateway
 
   AttachGateway:
     Type: 'AWS::EC2::VPCGatewayAttachment'
     Properties:
-      VpcId: !Ref MyVPC
-      InternetGatewayId: !Ref MyInternetGateway
+      VpcId: !Ref TanVPC
+      InternetGatewayId: !Ref TanInternetGateway
 
   MySubnet:
     Type: 'AWS::EC2::Subnet'
     Properties:
-      VpcId: !Ref MyVPC
+      VpcId: !Ref TanVPC
       CidrBlock: 10.0.0.0/24
       MapPublicIpOnLaunch: true
       Tags:
         - Key: Name
-          Value: MySubnet
+          Value: TanSubnet
 
   MyRouteTable:
     Type: 'AWS::EC2::RouteTable'
     Properties:
-      VpcId: !Ref MyVPC
+      VpcId: !Ref TanVPC
       Tags:
         - Key: Name
-          Value: MyRouteTable
+          Value: TanRouteTable
 
   MyRoute:
     Type: 'AWS::EC2::Route'
     DependsOn: AttachGateway
     Properties:
-      RouteTableId: !Ref MyRouteTable
+      RouteTableId: !Ref TanRouteTable
       DestinationCidrBlock: 0.0.0.0/0
-      GatewayId: !Ref MyInternetGateway
+      GatewayId: !Ref TanInternetGateway
 
   SubnetRouteTableAssociation:
     Type: 'AWS::EC2::SubnetRouteTableAssociation'
     Properties:
-      SubnetId: !Ref MySubnet
-      RouteTableId: !Ref MyRouteTable
+      SubnetId: !Ref TanSubnet
+      RouteTableId: !Ref TanRouteTable
 
   InstanceSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
       GroupDescription: Enable HTTP, HTTPS, and SSH access
-      VpcId: !Ref MyVPC
+      VpcId: !Ref TanVPC
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 80
@@ -85,12 +85,12 @@ Resources:
     Type: 'AWS::EC2::Instance'
     Properties:
       InstanceType: t2.micro
-      # KeyName: your-key-pair  # Replace with your actual key pair name
-      ImageId: ami-012c2e8e24e2ae21d
+      KeyName: TanKeypair
+      ImageId: ami-02346a771f34de8ac
       NetworkInterfaces:
         - AssociatePublicIpAddress: true
           DeviceIndex: 0
-          SubnetId: !Ref MySubnet
+          SubnetId: !Ref TanSubnet
           GroupSet:
             - !Ref InstanceSecurityGroup
       IamInstanceProfile: EC2_SSM_ReadOnly
@@ -100,8 +100,8 @@ Resources:
           sudo yum update -y
           sudo yum install -y nginx git aws-cli
           TOKEN=$(aws ssm get-parameter --name "github_token" --with-decryption --query "Parameter.Value" --output text)
-          git clone https://khanhnguyen1942012:${TOKEN}@github.com/khanhnguyen1942012/hello-world-nginx ~/hello-world-nginx
-          sudo cp ~/hello-world-nginx/src/index.html /usr/share/nginx/html/index.html
+          git clone https://phuongtoantan:${TOKEN}@github.com/phuongtoantan/demoCF ~/demoCF
+          sudo cp ~/demoCF/src/index.html /usr/share/nginx/html/index.html
           sudo systemctl start nginx
           sudo systemctl enable nginx
 
