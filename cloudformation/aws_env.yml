@@ -33,7 +33,7 @@ Resources:
       MapPublicIpOnLaunch: true
       Tags:
         - Key: Name
-          Value: TanSubnet
+          Value: MySubnet
 
   MyRouteTable:
     Type: 'AWS::EC2::RouteTable'
@@ -41,21 +41,21 @@ Resources:
       VpcId: !Ref TanVPC
       Tags:
         - Key: Name
-          Value: TanRouteTable
+          Value: MyRouteTable
 
   MyRoute:
     Type: 'AWS::EC2::Route'
     DependsOn: AttachGateway
     Properties:
-      RouteTableId: !Ref TanRouteTable
+      RouteTableId: !Ref MyRouteTable
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref TanInternetGateway
 
   SubnetRouteTableAssociation:
     Type: 'AWS::EC2::SubnetRouteTableAssociation'
     Properties:
-      SubnetId: !Ref TanSubnet
-      RouteTableId: !Ref TanRouteTable
+      SubnetId: !Ref MySubnet
+      RouteTableId: !Ref MyRouteTable
 
   InstanceSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
@@ -90,7 +90,7 @@ Resources:
       NetworkInterfaces:
         - AssociatePublicIpAddress: true
           DeviceIndex: 0
-          SubnetId: !Ref TanSubnet
+          SubnetId: !Ref MySubnet
           GroupSet:
             - !Ref InstanceSecurityGroup
       IamInstanceProfile: EC2_SSM_ReadOnly
