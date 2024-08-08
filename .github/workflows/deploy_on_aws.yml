@@ -65,7 +65,7 @@ jobs:
     
     - name: Test
       run: |
-        echo "$(Stacks[0].Outputs[?OutputKey==`InstancePublicDNS`].OutputValue)"
+        echo "$(aws cloudformation describe-stacks --stack-name deploy-nginx-stack --query 'Stacks[0].Outputs[?OutputKey==`InstancePublicDNS`].OutputValue' --output text)"
         sleep 60
         CURL_OUTPUT=$(curl -v http://$(aws cloudformation describe-stacks --stack-name deploy-nginx-stack --query 'Stacks[0].Outputs[?OutputKey==`InstancePublicDNS`].OutputValue' --output text) 2>&1)
         echo "CURL_OUTPUT: $CURL_OUTPUT"
